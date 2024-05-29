@@ -20,7 +20,8 @@ while True:
     except ValueError:
         print("Invalid Input Try Again with Numbers")
 
-account_number = db_query(f"SELECT account_number FROM customers WHERE username = '{user}';")
+account_number = db_query(
+    f"SELECT account_number FROM customers WHERE username = '{user}';")
 
 while status:
     print(f"Welcome {user.capitalize()} Choose Your Banking Service\n")
@@ -28,9 +29,10 @@ while status:
         facility = int(input("1. Balance Enquiry\n"
                              "2. Cash Deposit\n"
                              "3. Cash Withdraw\n"
-                             "4. Fund Transfer\n "
+                             "4. Fund Transfer\n"
+                             "5. Exit\n "
                              ))
-        if facility >= 1 and facility <= 4:
+        if facility >= 1 and facility <= 5:
             if facility == 1:
                 bobj = Bank(user, account_number[0][0])
                 bobj.balanceequiry()
@@ -41,7 +43,7 @@ while status:
                         bobj = Bank(user, account_number[0][0])
                         bobj.deposit(amount)
                         mydb.commit()
-                        status = False
+                        break
                     except ValueError:
                         print("Enter Valid Input ie. Number")
                         continue
@@ -53,8 +55,7 @@ while status:
                         bobj = Bank(user, account_number[0][0])
                         bobj.withdraw(amount)
                         mydb.commit()
-                        status = False
-
+                        break
                     except ValueError:
                         print("Enter Valid Input ie. Number")
                         continue
@@ -66,10 +67,13 @@ while status:
                         bobj = Bank(user, account_number[0][0])
                         bobj.fundtransfer(receive, amount)
                         mydb.commit()
-                        status = False
+                        break
                     except ValueError:
                         print("Enter Valid Input ie. Number")
                         continue
+            elif facility == 5:
+                print("Thanks For Using Banking Services")
+                status = False
         else:
             print("Please Enter Valid Input From Options")
             continue
