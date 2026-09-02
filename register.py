@@ -2,13 +2,23 @@
 from customer import *
 from bank import Bank
 import random
+import re
 
 def SignUp():
     username = input("Create Username: ")
-    temp = db_query(f"SELECT username FROM customers where username = '{username}';")
+
+    if not re.fullmatch(r"[A-Za-z0-9_]{3,20}", username):
+        print("Invalid username")
+        return
+
+    temp = db_query(
+        "SELECT username FROM customers WHERE username = %s",
+        (username,)
+    )
+
     if temp:
         print("Username Already Exists")
-        SignUp()
+        return
     else:
         print("Username is Available Please Proceed")
         password = input("Enter Your Password: ")
@@ -29,18 +39,31 @@ def SignUp():
     bobj.create_transaction_table()
 def SignIn():
     username = input("Enter Username: ")
-    temp = db_query(f"SELECT username FROM customers where username = '{username}';")
+
+    if not re.fullmatch(r"[A-Za-z0-9_]{3,20}", username):
+        print("Invalid username")
+        return
+
+    temp = db_query(
+        "SELECT username FROM customers WHERE username = %s",
+        (username,)
+    )
+
     if temp:
         while True:
-            password = input(f"Welcome {username.capitalize()} Enter Password: ")
-            temp = db_query(f"SELECT password FROM customers where username = '{username}';")
-            # print(temp[0][0])
+            password = input(
+                f"Welcome {username.capitalize()} Enter Password: "
+            )
+
+            temp = db_query(
+                "SELECT password FROM customers WHERE username = %s",
+                (username,)
+            )
+
             if temp[0][0] == password:
-                print("Sign IN Succesfully")
+                print("Sign IN Successfully")
                 return username
             else:
                 print("Wrong Password Try Again")
-                continue
     else:
         print("Enter Correct Username")
-        SignIn()
